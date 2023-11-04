@@ -1,5 +1,7 @@
-var builder = WebApplication.CreateBuilder(args);
+using Data;
 
+var builder = WebApplication.CreateBuilder(args);
+ApplicationDbContext.ConnectionString = builder.Configuration.GetConnectionString("ConexionBase");
 // Add services to the container.
 
 builder.Services.AddControllers();
