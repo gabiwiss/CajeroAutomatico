@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 
 namespace Data.Managers
 {
-    public class ReportesManager : BaseManager<Operaciones>
+    public class OperacionesManager : BaseManager<Operaciones>
     {
         public async Task<bool> GuardarOperacion(Operaciones operacion)
         {
