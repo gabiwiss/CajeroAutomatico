@@ -1,10 +1,11 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model Web.Models.UsuariosViewModel
 @{
 }
 <section>
-    <form asp-controller="Usuarios" asp-action="Operaciones" method="post">
+    <form asp-controller="Usuarios" asp-action="VerificarPin" method="post">
         <div class="row pb-5">
             <div class="col-4 offset-4 text-center">
                 <h1>
@@ -13,18 +14,24 @@
             </div>
             <div class="col-4 offset-4 p-5 position-relative">
                 <div class="position-absolute top-50 start-50 translate-middle">
-                    <input id="inputCajeroNroCuenta" type="number" name="nroCuenta" value="@ViewBag.nroCuenta" hidden readonly/>
-                    <input id="inputCajeroNroCuenta" type="number" name="intentos" value="@ViewBag.intentos" hidden readonly />
-                    <input id="inputCajero" type="number" name="pin" readonly />
+                    <input id="inputCajeroNroCuenta" type="number" name="nroCuenta" value="@Model.NroCuenta" hidden readonly/>
+                    <input id="inputCajeroNroCuenta" type="number" name="intentos" value="@Model.Intentos" hidden readonly />
+                    <input id="inputCajero" type="password" name="pin" readonly />
                 </div>
             </div>
         </div>
-        @if (ViewBag.mensaje != null)
+        @if (Model.Intentos < 4 && Model.Intentos > 0 )
         {
             <div class="col-4 offset-4 alert alert-danger" role="alert">
-                @ViewBag.mensaje
+                Pin incorrecto. Le quedan @Model.Intentos intentos.
             </div>
         }
+@*        else if( Model.Intentos <= 0)
+        {
+            <div class="col-4 offset-4 alert alert-danger" role="alert">
+                Su cuenta ha sido bloqueada.
+            </div>
+        }*@
         <div class="row">
             <div class="col-4 offset-4 text-center p-1">
                 <a class="btn btn-primary btn-lg">1</a>

@@ -1,7 +1,9 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model Web.Models.UsuariosViewModel
 @{
+    
 }
 <div class="row pb-5">
     <div class="col-4 offset-4 text-center">
@@ -10,8 +12,8 @@
         </h1>
     </div>
     <div class="d-grid gap-2 col-6 mx-auto p-5">
-        <a href="~/Usuarios/Balance.cshtml?nroCuenta=@ViewBag.nroCuenta" class="btn btn-primary" type="button">Balance</a>
-        <a href="~/Usuarios/Retiro.cshtml?nroCuenta=@ViewBag.nroCuenta" class="btn btn-primary" type="button">Retiro</a>
+        <a asp-action="Balance" asp-controller="Usuarios" asp-route-nroCuenta="@Model.NroCuenta" type="button">Balance</a>
+        <a asp-action="Retiro" asp-controller="Usuarios" asp-route-nroCuenta="@Model.NroCuenta" asp-route-pin="@Model.Pin" class="btn btn-primary" type="button">Retiro</a>
     </div>
     <div class="col-4 offset-4 text-center p-5">
         <a class="btn btn-danger btn-lg">SALIR</a>
