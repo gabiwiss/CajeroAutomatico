@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +16,10 @@ namespace Data.Managers
         {
             return await contextoSingleton.Usuarios.Where(a => a.NroCuenta == nroCuenta && a.Bloqueado == false).CountAsync() > 0;
         }
-
+        public async Task<Usuarios> RecuperarUsuario(string nroCuenta)
+        {
+            return await contextoSingleton.Usuarios.Where(a => a.NroCuenta == nroCuenta).SingleOrDefaultAsync();
+        }
         public async Task<Usuarios> VerificarPin(int pin, string nroCuenta) 
         {
             return await contextoSingleton.Usuarios.Where(a => a.NroCuenta == nroCuenta && a.Pin == pin).SingleOrDefaultAsync();
@@ -23,10 +27,20 @@ namespace Data.Managers
 
         public async Task<bool> RetirarMonto(Usuarios usuario)
         {
-            contextoSingleton.Update(usuario).State = EntityState.Modified;
-            var resultado= await contextoSingleton.SaveChangesAsync() > 0;
-            contextoSingleton.Update(usuario).State = EntityState.Detached;
-            return resultado;
+            Usuarios usuarioRecuperado = contextoSingleton.Usuarios.Where(a => a.NroCuenta == usuario.NroCuenta && a.Pin == usuario.Pin).SingleOrDefault();
+            if (usuario.Balance <= usuarioRecuperado.Balance)
+            {
+                usuarioRecuperado.Balance -= usuario.Balance;
+
+                contextoSingleton.Update(usuarioRecuperado).State = EntityState.Modified;
+                var resultado = await contextoSingleton.SaveChangesAsync() > 0;
+                contextoSingleton.Update(usuarioRecuperado).State = EntityState.Detached;
+                return resultado;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public async Task<bool> BloquearUsuario(string nroCuenta)

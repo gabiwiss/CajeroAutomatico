@@ -22,10 +22,11 @@ namespace API.Services
             {
                 return await _usuariosManager.BuscarUsuario(nroCuentaFormateado);
             }
-
-
         }
-
+        public async Task<Usuarios> RecuperarUsuario(long nroCuenta)
+        {
+            return await _usuariosManager.RecuperarUsuario(Util.ConvertirIntAFormatoDeCuenta(nroCuenta));
+        }
         public async Task<Usuarios> VerificarPin(int pin, string nroCuenta)
         {
             
@@ -38,18 +39,9 @@ namespace API.Services
             return await _usuariosManager.BloquearUsuario(usuario.NroCuenta);
         }
 
-        public async Task<bool> RetirarMonto(Usuarios usuario, decimal monto)
-        {
-            if (usuario.Balance >= monto)
-            {
-                usuario.Balance = usuario.Balance - monto;
+        public async Task<bool> RetirarMonto(Usuarios usuario)
+        { 
                 return await _usuariosManager.RetirarMonto(usuario);
-            }
-            else
-            {
-                return false;
-            }
-
         }
     }
 }

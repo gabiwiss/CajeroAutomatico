@@ -22,6 +22,12 @@ namespace API.Controllers
         {
             return await _usuariosServices.BuscarUsuario(nroCuenta);
         }
+        [HttpGet]
+        [Route("RecuperarUsuario")]
+        public async Task<Usuarios> RecuperarUsuario(long nroCuenta)
+        {
+            return await _usuariosServices.RecuperarUsuario(nroCuenta);
+        }
 
         [HttpPost]
         [Route("VerificarPin")]
@@ -40,9 +46,9 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("RetirarMonto")]
-        public async Task<bool> RetirarMonto(Usuarios usuario, decimal monto)
+        public async Task<bool> RetirarMonto(Usuarios usuario)
         {
-            return await _usuariosServices.RetirarMonto(usuario, monto);
+            return await _usuariosServices.RetirarMonto(usuario);
         }
     }
 }
