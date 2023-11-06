@@ -24,12 +24,12 @@ namespace Data.Base
         public async Task<IActionResult> PostToApi(string ControllerName, long nroCuenta)
         {
             var client = _httpClient.CreateClient("useApi");
-            
+
             Usuarios usuarios = new Usuarios();
-            
+
             usuarios.Bloqueado = false;
-           
-            
+
+
             var response = await client.PostAsJsonAsync(ControllerName, usuarios);
             if (response.IsSuccessStatusCode)
             {
@@ -53,7 +53,7 @@ namespace Data.Base
             usuarios.Id = 0;
             usuarios.Pin = 0;
             usuarios.FechaVencimiento = new DateTime(2000, 1, 1);
-            
+
             var response = await client.PostAsJsonAsync(ControllerName, usuarios);
             if (response.IsSuccessStatusCode)
             {
@@ -87,7 +87,7 @@ namespace Data.Base
             usuarios.Balance = 0;
             usuarios.Id = 0;
             usuarios.Pin = pin;
-            usuarios.FechaVencimiento = new DateTime(2000, 1, 1); 
+            usuarios.FechaVencimiento = new DateTime(2000, 1, 1);
 
             var response = await client.PostAsJsonAsync(ControllerName,usuarios);
             if (response!=null && response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -110,6 +110,28 @@ namespace Data.Base
             usuarios.FechaVencimiento = new DateTime(2000, 1, 1);
 
             var response = await client.PostAsJsonAsync(ControllerName, usuarios);
+            if (response.IsSuccessStatusCode)
+            {
+                await GuardarOperacion(usuarios, 1);
+                var content = await response.Content.ReadAsStringAsync();
+                return Ok(content);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        public async Task<IActionResult> GuardarOperacion(Usuarios usuario, int codigoOperacion)
+        {
+            var client = _httpClient.CreateClient("useApi");
+            Operaciones operacion = new Operaciones();
+            operacion.NroCuenta = usuario.NroCuenta;
+            operacion.CodigoOperacion = codigoOperacion;
+            operacion.MontoRetirado = usuario.Balance;
+            operacion.FechaHoraOperacion = DateTime.Now;
+            operacion.Id = 0;
+            var response = await client.PostAsJsonAsync("Operaciones/GuardarOperacion", operacion);
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();

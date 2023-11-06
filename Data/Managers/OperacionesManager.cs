@@ -14,7 +14,7 @@ namespace Data.Managers
     {
         public async Task<bool> GuardarOperacion(Operaciones operacion)
         {
-            contextoSingleton.Entry(operacion).State = EntityState.Modified;
+            contextoSingleton.Entry(operacion).State = EntityState.Added;
             var respuesta =await contextoSingleton.SaveChangesAsync() > 0;
             contextoSingleton.Entry(operacion).State = EntityState.Detached;
             return respuesta;
