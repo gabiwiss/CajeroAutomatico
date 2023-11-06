@@ -1,15 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Data.Base;
+using Web.Models;
+using Microsoft.Data.SqlClient;
 
 namespace Web.Controllers
 {
     public class UsuariosController : Controller
     {
         private readonly IHttpClientFactory _httpClient;
+        private readonly BaseApi baseApi;
 
         public UsuariosController(IHttpClientFactory httpClient)
         {
             _httpClient = httpClient;
+            baseApi = new BaseApi(_httpClient);
         }
 
         [HttpGet]
@@ -19,57 +23,106 @@ namespace Web.Controllers
             return View();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> VerificarPin(long nroCuenta, int intentos = 4, string mensaje=null)
+        [HttpPost]
+        public async Task<IActionResult> Index(long nroCuenta)
         {
-            var baseApi = new BaseApi(_httpClient);
-            var response = await baseApi.BuscarUsuario("Usuarios/BuscarUsuario","?nroCuenta="+nroCuenta);
+            
+            var response = await baseApi.BuscarUsuario("Usuarios/BuscarUsuario", "?nroCuenta=" + nroCuenta);
             var resultado = response as OkObjectResult;
-
-            if (resultado != null && resultado.StatusCode == StatusCodes.Status200OK && intentos>0)
+            if (resultado != null && resultado.StatusCode == StatusCodes.Status200OK)
             {
-                ViewBag.mensaje = mensaje;
-                ViewBag.intentos = intentos;
-                ViewBag.nroCuenta = nroCuenta;
-                return View();
-            }
-            else if (intentos==0)
-            {
-                await baseApi.BloquearUsuario("Usuarios/BloquearUsuario", nroCuenta);
-                return RedirectToAction("Index", "Usuarios", new { mensaje = "Su cuenta ha sido bloqueada" });
+                return RedirectToAction("VerificarPin",new UsuariosViewModel { NroCuenta = nroCuenta, Intentos = 4});
             }
             else
             {
-                return RedirectToAction("Index", "Usuarios", new { mensaje = "No se ha encontrado la cuenta"});
+                return RedirectToAction("Index", new { mensaje = "No se ha encontrado cuenta activa" });
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Operaciones(long nroCuenta, int pin, int intentos)
+        [HttpGet]
+        public async Task<IActionResult> VerificarPin(UsuariosViewModel usuario)
         {
-            var baseApi = new BaseApi(_httpClient);
+            if (usuario.Intentos <= 0)
+            {
+                await baseApi.BloquearUsuario("Usuarios/BloquearUsuario", usuario.NroCuenta);
+                return RedirectToAction("Index", new { mensaje = "Su cuenta ha sido Bloqueada" });
+            }
+            return View(usuario);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VerificarPin(long nroCuenta, int pin, int intentos)
+        {
+            
             var response = await baseApi.VerificarPin("Usuarios/VerificarPin", pin, nroCuenta);
             var resultado = response as OkObjectResult;
             if (resultado != null && resultado.StatusCode == StatusCodes.Status200OK)
             {
-                ViewBag.nroCuenta = nroCuenta;
-                return View();
+                return RedirectToAction("Operaciones", new UsuariosViewModel { NroCuenta=nroCuenta, Pin=pin});
             }
             else
             {
-                return RedirectToAction("VerificarPin", "Usuarios", new { nroCuenta=nroCuenta,intentos=--intentos, mensaje = "PIN INCORRECTO, TIENE "+intentos+" intentos" });
+                return RedirectToAction("VerificarPin", new UsuariosViewModel { NroCuenta = nroCuenta, Intentos = --intentos });
             }
         }
 
         [HttpGet]
-        public IActionResult Retiro(Models.UsuariosViewModel modelo)
+        public async Task<IActionResult> Operaciones(UsuariosViewModel usuario)
+        {
+            return View(usuario);
+        }
+
+        //[HttpGet]
+        //public async Task<IActionResult> VerificarPin(long nroCuenta, int intentos = 4, string mensaje=null)
+        //{
+        //    var baseApi = new BaseApi(_httpClient);
+        //    var response = await baseApi.BuscarUsuario("Usuarios/BuscarUsuario","?nroCuenta="+nroCuenta);
+        //    var resultado = response as OkObjectResult;
+
+        //    if (resultado != null && resultado.StatusCode == StatusCodes.Status200OK && intentos>0)
+        //    {
+        //        ViewBag.mensaje = mensaje;
+        //        ViewBag.intentos = intentos;
+        //        ViewBag.nroCuenta = nroCuenta;
+        //        return View();
+        //    }
+        //    else if (intentos==0)
+        //    {
+        //        await baseApi.BloquearUsuario("Usuarios/BloquearUsuario", nroCuenta);
+        //        return RedirectToAction("Index", "Usuarios", new { mensaje = "Su cuenta ha sido bloqueada" });
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("Index", "Usuarios", new { mensaje = "No se ha encontrado la cuenta"});
+        //    }
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> Operaciones(long nroCuenta, int pin, int intentos)
+        //{
+        //    var baseApi = new BaseApi(_httpClient);
+        //    var response = await baseApi.VerificarPin("Usuarios/VerificarPin", pin, nroCuenta);
+        //    var resultado = response as OkObjectResult;
+        //    if (resultado != null && resultado.StatusCode == StatusCodes.Status200OK)
+        //    {
+        //        ViewBag.nroCuenta = nroCuenta;
+        //        return View();
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("VerificarPin", "Usuarios", new { nroCuenta=nroCuenta,intentos=--intentos, mensaje = "PIN INCORRECTO, TIENE "+intentos+" intentos" });
+        //    }
+        //}
+
+        [HttpGet]
+        public IActionResult Retiro(long nroCuenta, int pin)
         {
             
-            return View(modelo);
+            return View(new UsuariosViewModel { NroCuenta= nroCuenta, Pin= pin});
         }
 
         [HttpPost]
-        public async Task<IActionResult> Retiro(int nroCuenta, int pin, string balance)
+        public async Task<IActionResult> Retiro(long nroCuenta, int pin, string balance)
         {
             var baseApi = new BaseApi(_httpClient);
             var response = await baseApi.RetirarMonto("Usuarios/RetirarMonto", nroCuenta,pin, Convert.ToDecimal(balance));
@@ -80,7 +133,7 @@ namespace Web.Controllers
             }
             else
             {
-                return RedirectToAction("Retiro", "Usuarios", new {mensaje="No tiene suficiente saldo para realizar la operacion"});
+                return RedirectToAction("Retiro", "Usuarios", new UsuariosViewModel { NroCuenta= nroCuenta, Pin=pin, mensaje="No tiene suficiente saldo para realizar la operacion"});
             }
             
         }
