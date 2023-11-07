@@ -1,5 +1,6 @@
 ﻿using API;
 using Data.Entities;
+using Data.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
@@ -27,7 +28,7 @@ namespace Data.Base
         {
             var client = _httpClient.CreateClient("useApi");
 
-            Usuarios usuarios = new Usuarios();
+            Usuarios usuarios = new UsuariosDto();
 
             usuarios.Bloqueado = false;
 
@@ -48,7 +49,7 @@ namespace Data.Base
         {
             var client = _httpClient.CreateClient("useApi");
 
-            Usuarios usuarios = new Usuarios();
+            Usuarios usuarios = new UsuariosDto();
             usuarios.NroCuenta=Util.ConvertirIntAFormatoDeCuenta(nroCuenta);
             usuarios.Bloqueado=true;
             usuarios.Balance = 0;
@@ -83,7 +84,7 @@ namespace Data.Base
         {
             var client = _httpClient.CreateClient("useApi");
 
-            Usuarios usuarios = new Usuarios();
+            Usuarios usuarios = new UsuariosDto();
             usuarios.NroCuenta = Util.ConvertirIntAFormatoDeCuenta(nroCuenta);
             usuarios.Bloqueado = true;
             usuarios.Balance = 0;
@@ -99,24 +100,25 @@ namespace Data.Base
 
         }
 
-        public async Task<IActionResult> RetirarMonto(string ControllerName, long nroCuenta, int pin, decimal monto)
+        public async Task<IActionResult> RetirarMonto(string ControllerName,int idCuenta, long nroCuenta, int pin,decimal balance, decimal monto)
         {
             var client = _httpClient.CreateClient("useApi");
 
-            Usuarios usuarios = new Usuarios();
+            UsuariosDto usuarios = new UsuariosDto();
             usuarios.NroCuenta = Util.ConvertirIntAFormatoDeCuenta(nroCuenta);
             usuarios.Bloqueado = false;
-            usuarios.Balance = monto;
-            usuarios.Id = 0;
+            usuarios.Balance = balance;
+            usuarios.Id = idCuenta;
             usuarios.Pin = pin;
             usuarios.FechaVencimiento = new DateTime(2000, 1, 1);
+            usuarios.Retiro = monto;
 
             var response = await client.PostAsJsonAsync(ControllerName, usuarios);
             if (response.IsSuccessStatusCode)
             {
-                await GuardarOperacion(usuarios, 1);
+                var content2 =await GuardarOperacion(usuarios, 1);
                 var content = await response.Content.ReadAsStringAsync();
-                return Ok(content);
+                return content2;
             }
             else
             {
@@ -124,20 +126,21 @@ namespace Data.Base
             }
         }
 
-        public async Task<IActionResult> GuardarOperacion(Usuarios usuario, int codigoOperacion)
+        public async Task<IActionResult> GuardarOperacion(UsuariosDto usuario, int codigoOperacion)
         {
             var client = _httpClient.CreateClient("useApi");
-            Operaciones operacion = new Operaciones();
+            Operaciones operacion = new OperacionesDto();
             operacion.NroCuenta = usuario.NroCuenta;
             operacion.CodigoOperacion = codigoOperacion;
-            operacion.MontoRetirado = usuario.Balance;
+            operacion.MontoRetirado = usuario.Retiro;
+            operacion.Balance = usuario.Balance - usuario.Retiro;
             operacion.FechaHoraOperacion = DateTime.Now;
             operacion.Id = 0;
             var response = await client.PostAsJsonAsync("Operaciones/GuardarOperacion", operacion);
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                return Ok(content);
+                return Ok(operacion);
             }
             else
             {

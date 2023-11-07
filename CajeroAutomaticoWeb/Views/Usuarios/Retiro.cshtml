@@ -14,9 +14,11 @@
             </div>
             <div class="col-4 offset-4 p-5 position-relative">
                 <div class="position-absolute top-50 start-50 translate-middle">
-                    <input id="inputCajero" type="text" name="balance" readonly />
-                    <input id="" type="number" name="nroCuenta" value="@Model.NroCuenta"  readonly />
+                    <input id="inputCajero" type="text" name="cantRetiro" readonly />
+                    <input id="" type="number" name="IdCuenta" value="@Model.Id" hidden readonly />
+                    <input id="" type="number" name="nroCuenta" value="@Model.NroCuenta" hidden readonly />
                     <input id="" type="number" name="pin" value="@Model.Pin" hidden readonly />
+                    <input id="" type="text" name="balance" value="@Model.Balance" hidden readonly />
                 </div>
             </div>
         </div>

@@ -12,8 +12,10 @@
         </h1>
     </div>
     <div class="d-grid gap-2 col-6 mx-auto p-5">
-        <a asp-action="Balance" asp-controller="Usuarios" asp-route-nroCuenta="@Model.NroCuenta" type="button">Balance</a>
-        <a asp-action="Retiro" asp-controller="Usuarios" asp-route-nroCuenta="@Model.NroCuenta" asp-route-pin="@Model.Pin" class="btn btn-primary" type="button">Retiro</a>
+        @Html.ActionLink("Balance","Balance","Usuarios",Model,new {@class="btn btn-primary"})
+        @Html.ActionLink("Retiro","Retiro","Usuarios",Model,new {@class="btn btn-primary"})
+@*        <a asp-action="Balance" asp-controller="Usuarios" asp-route-nroCuenta="@Model.NroCuenta" class="btn btn-primary"  type="button">Balance</a>
+        <a asp-action="Retiro" asp-controller="Usuarios" asp-route-nroCuenta="@Model.NroCuenta" asp-route-pin="@Model.Pin" class="btn btn-primary" type="button">Retiro</a>*@
     </div>
     <div class="col-4 offset-4 text-center p-5">
         <a class="btn btn-danger btn-lg">SALIR</a>

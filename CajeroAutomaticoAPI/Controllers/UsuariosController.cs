@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Data.Dto;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -31,24 +32,24 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("VerificarPin")]
-        public async Task<Usuarios> VerificarPin(Usuarios usuario)
+        public async Task<Usuarios> VerificarPin(UsuariosDto usuarioDto)
         {
             
-            return await _usuariosServices.VerificarPin(usuario.Pin,usuario.NroCuenta);
+            return await _usuariosServices.VerificarPin(usuarioDto);
         }
         [HttpPost]
         [Route("BloquearUsuario")]
-        public async Task<bool> BloquearUsuario(Usuarios usuario)
+        public async Task<bool> BloquearUsuario(UsuariosDto usuarioDto)
         {
             
-            return await _usuariosServices.BloquearUsuario(usuario);
+            return await _usuariosServices.BloquearUsuario(usuarioDto);
         }
 
         [HttpPost]
         [Route("RetirarMonto")]
-        public async Task<bool> RetirarMonto(Usuarios usuario)
+        public async Task<bool> RetirarMonto(UsuariosDto usuarioDto)
         {
-            return await _usuariosServices.RetirarMonto(usuario);
+            return await _usuariosServices.RetirarMonto(usuarioDto);
         }
     }
 }

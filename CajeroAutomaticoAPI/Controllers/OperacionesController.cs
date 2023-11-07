@@ -1,6 +1,7 @@
 ﻿using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Data.Entities;
+using Data.Dto;
 namespace API.Controllers
 {
     [ApiController]
@@ -15,9 +16,9 @@ namespace API.Controllers
         }
         [HttpPost]
         [Route("GuardarOperacion")]
-        public async Task<bool> GuardarOperacion(Operaciones operacion)
+        public async Task<bool> GuardarOperacion(OperacionesDto operacionDto)
         {
-            return await _operacionesService.GuardarOperacion(operacion);
+            return await _operacionesService.GuardarOperacion(operacionDto);
         }
     }
 }

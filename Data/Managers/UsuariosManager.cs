@@ -25,12 +25,12 @@ namespace Data.Managers
             return await contextoSingleton.Usuarios.Where(a => a.NroCuenta == nroCuenta && a.Pin == pin).SingleOrDefaultAsync();
         }
 
-        public async Task<bool> RetirarMonto(Usuarios usuario)
+        public async Task<bool> RetirarMonto(Usuarios usuario, decimal cantRetiro)
         {
             Usuarios usuarioRecuperado = contextoSingleton.Usuarios.Where(a => a.NroCuenta == usuario.NroCuenta && a.Pin == usuario.Pin).SingleOrDefault();
-            if (usuario.Balance <= usuarioRecuperado.Balance)
+            if (cantRetiro <= usuarioRecuperado.Balance)
             {
-                usuarioRecuperado.Balance -= usuario.Balance;
+                usuarioRecuperado.Balance -= cantRetiro;
 
                 contextoSingleton.Update(usuarioRecuperado).State = EntityState.Modified;
                 var resultado = await contextoSingleton.SaveChangesAsync() > 0;

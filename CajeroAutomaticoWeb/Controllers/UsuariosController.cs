@@ -3,6 +3,7 @@ using Data.Base;
 using Web.Models;
 using Microsoft.Data.SqlClient;
 using Data.Entities;
+using Data.Dto;
 using Newtonsoft.Json;
 using System.Data;
 
@@ -72,7 +73,11 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Operaciones(UsuariosViewModel usuario)
         {
-            return View(usuario);
+            var response = await baseApi.RecuperarCuenta(usuario.NroCuenta);
+            var resultadoUsuario = response as OkObjectResult;
+            UsuariosViewModel modelo = JsonConvert.DeserializeObject<UsuariosDto>(resultadoUsuario.Value.ToString());
+
+            return View(modelo);
         }
 
         //[HttpGet]
@@ -118,21 +123,23 @@ namespace Web.Controllers
         //}
 
         [HttpGet]
-        public IActionResult Retiro(long nroCuenta, int pin)
+        public IActionResult Retiro(UsuariosViewModel usuarios)
         {
             
-            return View(new UsuariosViewModel { NroCuenta= nroCuenta, Pin= pin});
+            return View(usuarios);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Retiro(long nroCuenta, int pin, string balance)
+        public async Task<IActionResult> Retiro(int IdCuenta, long nroCuenta, int pin, string balance,string cantRetiro)
         {
             var baseApi = new BaseApi(_httpClient);
-            var response = await baseApi.RetirarMonto("Usuarios/RetirarMonto", nroCuenta,pin, Convert.ToDecimal(balance));
+            var response = await baseApi.RetirarMonto("Usuarios/RetirarMonto",IdCuenta, nroCuenta,pin, Convert.ToDecimal(balance), Convert.ToDecimal(cantRetiro));
             var resultado = response as OkObjectResult;
             if (resultado != null && resultado.StatusCode == StatusCodes.Status200OK)
             {
-                return RedirectToAction("ReporteOperacion", "Usuarios",new {nroCuenta=nroCuenta,balance=balance });
+                OperacionesViewModel modelo = resultado.Value as Operaciones;
+
+                return RedirectToAction("ReporteOperacion", "Operaciones", modelo) ;
             }
             else
             {
@@ -146,10 +153,10 @@ namespace Web.Controllers
         {
             var response = await baseApi.RecuperarCuenta(nroCuenta);
             var resultadoUsuario = response as OkObjectResult;
-            Usuarios usuario = JsonConvert.DeserializeObject<Usuarios>(resultadoUsuario.Value.ToString());
-          
-
-            return View();
+            UsuariosViewModel modelo = JsonConvert.DeserializeObject<UsuariosDto>(resultadoUsuario.Value.ToString());
+            
+            
+            return View(modelo);
         }
 
     }

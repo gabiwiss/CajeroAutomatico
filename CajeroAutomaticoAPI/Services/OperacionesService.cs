@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.Managers;
+using Data.Dto;
 
 namespace API.Services
 {
@@ -11,8 +12,9 @@ namespace API.Services
             operacionesManager = new OperacionesManager();
         }
 
-        public async Task<bool> GuardarOperacion(Operaciones operacion)
+        public async Task<bool> GuardarOperacion(OperacionesDto operacionDto)
         {
+            Operaciones operacion = operacionDto;
             return await operacionesManager.GuardarOperacion(operacion);
         }
     }

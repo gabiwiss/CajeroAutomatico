@@ -1,5 +1,6 @@
 ﻿using Data.Managers;
 using Data.Entities;
+using Data.Dto;
 
 namespace API.Services
 {
@@ -27,21 +28,22 @@ namespace API.Services
         {
             return await _usuariosManager.RecuperarUsuario(Util.ConvertirIntAFormatoDeCuenta(nroCuenta));
         }
-        public async Task<Usuarios> VerificarPin(int pin, string nroCuenta)
+        public async Task<Usuarios> VerificarPin(UsuariosDto usuarioDto)
         {
-            
-            return await _usuariosManager.VerificarPin(pin, nroCuenta);
+            Usuarios usuario = usuarioDto;
+            return await _usuariosManager.VerificarPin(usuario.Pin, usuario.NroCuenta);
         }
 
-        public async Task<bool> BloquearUsuario(Usuarios usuario)
+        public async Task<bool> BloquearUsuario(UsuariosDto usuarioDto)
         {
-           
+            Usuarios usuario = usuarioDto;
             return await _usuariosManager.BloquearUsuario(usuario.NroCuenta);
         }
 
-        public async Task<bool> RetirarMonto(Usuarios usuario)
-        { 
-                return await _usuariosManager.RetirarMonto(usuario);
+        public async Task<bool> RetirarMonto(UsuariosDto usuarioDto)
+        {
+            Usuarios usuario = usuarioDto;
+            return await _usuariosManager.RetirarMonto(usuario,usuarioDto.Retiro);
         }
     }
 }
