@@ -3,11 +3,13 @@ using Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Data.Base
@@ -143,5 +145,20 @@ namespace Data.Base
             }
         }
 
+        public async Task<IActionResult> RecuperarCuenta(long nroCuenta)
+        {
+            var client = _httpClient.CreateClient("useApi");
+            var response = await client.GetAsync("Usuarios/RecuperarUsuario?nroCuenta=" + nroCuenta);
+
+            if (response.IsSuccessStatusCode) 
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return Ok(content);
+            }
+            else
+            {
+                return BadRequest();
+            }             
+        }
     }
 }
