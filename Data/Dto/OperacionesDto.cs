@@ -9,7 +9,7 @@ namespace Data.Dto
     public class OperacionesDto
     {
         public int Id { get; set; }
-        public string NroCuenta { get; set; }
+        public int IdUsuario { get; set; }
         public DateTime FechaHoraOperacion { get; set; }
         public int CodigoOperacion { get; set; }
         public decimal? MontoRetirado { get; set; }

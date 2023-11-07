@@ -12,6 +12,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Reflection.Metadata;
 
 namespace Data.Base
 {
@@ -24,11 +25,11 @@ namespace Data.Base
             _httpClient = httpClient;
         }
 
-        public async Task<IActionResult> PostToApi(string ControllerName, long nroCuenta)
+        public async Task<IActionResult> PostToApi(string ControllerName, string nroCuenta)
         {
             var client = _httpClient.CreateClient("useApi");
 
-            Usuarios usuarios = new UsuariosDto();
+            UsuariosDto usuarios = new UsuariosDto();
 
             usuarios.Bloqueado = false;
 
@@ -45,12 +46,12 @@ namespace Data.Base
             }
         }
 
-        public async Task<IActionResult> BloquearUsuario(string ControllerName, long nroCuenta)
+        public async Task<IActionResult> BloquearUsuario(string ControllerName, string nroCuenta)
         {
             var client = _httpClient.CreateClient("useApi");
 
-            Usuarios usuarios = new UsuariosDto();
-            usuarios.NroCuenta=Util.ConvertirIntAFormatoDeCuenta(nroCuenta);
+            UsuariosDto usuarios = new UsuariosDto();
+            usuarios.NroCuenta=nroCuenta;
             usuarios.Bloqueado=true;
             usuarios.Balance = 0;
             usuarios.Id = 0;
@@ -80,12 +81,12 @@ namespace Data.Base
                 return BadRequest();
 
         }
-        public async Task<IActionResult> VerificarPin(string ControllerName, int pin, long nroCuenta)
+        public async Task<IActionResult> VerificarPin(string ControllerName, int pin, string nroCuenta)
         {
             var client = _httpClient.CreateClient("useApi");
 
-            Usuarios usuarios = new UsuariosDto();
-            usuarios.NroCuenta = Util.ConvertirIntAFormatoDeCuenta(nroCuenta);
+            UsuariosDto usuarios = new UsuariosDto();
+            usuarios.NroCuenta = nroCuenta;
             usuarios.Bloqueado = true;
             usuarios.Balance = 0;
             usuarios.Id = 0;
@@ -100,12 +101,12 @@ namespace Data.Base
 
         }
 
-        public async Task<IActionResult> RetirarMonto(string ControllerName,int idCuenta, long nroCuenta, int pin,decimal balance, decimal monto)
+        public async Task<IActionResult> RetirarMonto(string ControllerName,int idCuenta, string nroCuenta, int pin,decimal balance, decimal monto)
         {
             var client = _httpClient.CreateClient("useApi");
 
             UsuariosDto usuarios = new UsuariosDto();
-            usuarios.NroCuenta = Util.ConvertirIntAFormatoDeCuenta(nroCuenta);
+            usuarios.NroCuenta = nroCuenta;
             usuarios.Bloqueado = false;
             usuarios.Balance = balance;
             usuarios.Id = idCuenta;
@@ -114,10 +115,10 @@ namespace Data.Base
             usuarios.Retiro = monto;
 
             var response = await client.PostAsJsonAsync(ControllerName, usuarios);
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && Convert.ToBoolean(await response.Content.ReadAsStringAsync()))
             {
                 var content2 =await GuardarOperacion(usuarios, 1);
-                var content = await response.Content.ReadAsStringAsync();
+                
                 return content2;
             }
             else
@@ -129,8 +130,8 @@ namespace Data.Base
         public async Task<IActionResult> GuardarOperacion(UsuariosDto usuario, int codigoOperacion)
         {
             var client = _httpClient.CreateClient("useApi");
-            Operaciones operacion = new OperacionesDto();
-            operacion.NroCuenta = usuario.NroCuenta;
+            OperacionesDto operacion = new OperacionesDto();
+            operacion.IdUsuario = usuario.Id;
             operacion.CodigoOperacion = codigoOperacion;
             operacion.MontoRetirado = usuario.Retiro;
             operacion.Balance = usuario.Balance - usuario.Retiro;
@@ -148,7 +149,7 @@ namespace Data.Base
             }
         }
 
-        public async Task<IActionResult> RecuperarCuenta(long nroCuenta)
+        public async Task<IActionResult> RecuperarCuenta(string nroCuenta)
         {
             var client = _httpClient.CreateClient("useApi");
             var response = await client.GetAsync("Usuarios/RecuperarUsuario?nroCuenta=" + nroCuenta);

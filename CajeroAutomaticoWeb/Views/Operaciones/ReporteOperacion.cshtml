@@ -19,7 +19,7 @@
         </ul>
     </div>
     <div class="col-4 offset-4 text-center p-5">
-        @Html.ActionLink("ATRAS","Operaciones","Usuarios",new Web.Models.UsuariosViewModel{ NroCuenta = Web.Util.ConvertirAFormatoDeNumero(Model.NroCuenta)}, new { @class = "btn btn-primary btn-lg" })
+        @Html.ActionLink("ATRAS","Operaciones","Usuarios",new Web.Models.UsuariosViewModel{ NroCuenta = Model.NroCuenta}, new { @class = "btn btn-primary btn-lg" })
         <a class="btn btn-danger btn-lg">SALIR</a>
     </div>
 </div>

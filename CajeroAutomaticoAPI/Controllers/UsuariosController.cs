@@ -19,13 +19,13 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("BuscarUsuario")]
-        public async Task<bool> BuscarUsuario( long nroCuenta)
+        public async Task<bool> BuscarUsuario( string nroCuenta)
         {
             return await _usuariosServices.BuscarUsuario(nroCuenta);
         }
         [HttpGet]
         [Route("RecuperarUsuario")]
-        public async Task<Usuarios> RecuperarUsuario(long nroCuenta)
+        public async Task<Usuarios> RecuperarUsuario(string nroCuenta)
         {
             return await _usuariosServices.RecuperarUsuario(nroCuenta);
         }
@@ -40,8 +40,7 @@ namespace API.Controllers
         [HttpPost]
         [Route("BloquearUsuario")]
         public async Task<bool> BloquearUsuario(UsuariosDto usuarioDto)
-        {
-            
+        {  
             return await _usuariosServices.BloquearUsuario(usuarioDto);
         }
 

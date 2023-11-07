@@ -21,16 +21,14 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(string mensaje)
+        public IActionResult Index(UsuariosViewModel mensaje)
         {
-            ViewBag.mensaje = mensaje;
-            return View();
+            return View(mensaje);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(long nroCuenta)
+        public async Task<IActionResult> Index(string nroCuenta)
         {
-            
             var response = await baseApi.BuscarUsuario("Usuarios/BuscarUsuario", "?nroCuenta=" + nroCuenta);
             var resultado = response as OkObjectResult;
             if (resultado != null && resultado.StatusCode == StatusCodes.Status200OK)
@@ -39,7 +37,7 @@ namespace Web.Controllers
             }
             else
             {
-                return RedirectToAction("Index", new { mensaje = "No se ha encontrado cuenta activa" });
+                return RedirectToAction("Index", new UsuariosViewModel{ mensaje = "No se ha encontrado cuenta activa" });
             }
         }
 
@@ -55,7 +53,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> VerificarPin(long nroCuenta, int pin, int intentos)
+        public async Task<IActionResult> VerificarPin(string nroCuenta, int pin, int intentos)
         {
             
             var response = await baseApi.VerificarPin("Usuarios/VerificarPin", pin, nroCuenta);
@@ -81,7 +79,7 @@ namespace Web.Controllers
         }
 
         //[HttpGet]
-        //public async Task<IActionResult> VerificarPin(long nroCuenta, int intentos = 4, string mensaje=null)
+        //public async Task<IActionResult> VerificarPin(string nroCuenta, int intentos = 4, string mensaje=null)
         //{
         //    var baseApi = new BaseApi(_httpClient);
         //    var response = await baseApi.BuscarUsuario("Usuarios/BuscarUsuario","?nroCuenta="+nroCuenta);
@@ -106,7 +104,7 @@ namespace Web.Controllers
         //}
 
         //[HttpPost]
-        //public async Task<IActionResult> Operaciones(long nroCuenta, int pin, int intentos)
+        //public async Task<IActionResult> Operaciones(string nroCuenta, int pin, int intentos)
         //{
         //    var baseApi = new BaseApi(_httpClient);
         //    var response = await baseApi.VerificarPin("Usuarios/VerificarPin", pin, nroCuenta);
@@ -130,26 +128,27 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Retiro(int IdCuenta, long nroCuenta, int pin, string balance,string cantRetiro)
+        public async Task<IActionResult> Retiro(int IdCuenta, string nroCuenta, int pin, string balance,string cantRetiro)
         {
             var baseApi = new BaseApi(_httpClient);
             var response = await baseApi.RetirarMonto("Usuarios/RetirarMonto",IdCuenta, nroCuenta,pin, Convert.ToDecimal(balance), Convert.ToDecimal(cantRetiro));
             var resultado = response as OkObjectResult;
             if (resultado != null && resultado.StatusCode == StatusCodes.Status200OK)
             {
-                OperacionesViewModel modelo = resultado.Value as Operaciones;
+                OperacionesViewModel modelo = resultado.Value as OperacionesDto;
+                modelo.NroCuenta = nroCuenta;
 
                 return RedirectToAction("ReporteOperacion", "Operaciones", modelo) ;
             }
             else
             {
-                return RedirectToAction("Retiro", "Usuarios", new UsuariosViewModel { NroCuenta= nroCuenta, Pin=pin, mensaje="No tiene suficiente saldo para realizar la operacion"});
+                return RedirectToAction("Retiro", "Usuarios", new UsuariosViewModel { NroCuenta= nroCuenta, Pin=pin, Balance= Convert.ToDecimal(balance), mensaje ="No tiene suficiente saldo para realizar la operacion"});
             }
             
         }
 
         [HttpGet]
-        public async Task<IActionResult> Balance(long nroCuenta)
+        public async Task<IActionResult> Balance(string nroCuenta)
         {
             var response = await baseApi.RecuperarCuenta(nroCuenta);
             var resultadoUsuario = response as OkObjectResult;

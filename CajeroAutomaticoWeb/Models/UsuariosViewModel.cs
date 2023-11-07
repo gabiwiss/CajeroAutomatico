@@ -6,7 +6,7 @@ namespace Web.Models
     {
 
         public int Id { get; set; }
-        public long NroCuenta { get; set; }
+        public string NroCuenta { get; set; }
         public int Pin { get; set; }
         public decimal Balance { get; set; }
         public DateTime FechaVencimiento { get; set; }
@@ -20,7 +20,7 @@ namespace Web.Models
             UsuariosViewModel modelo = new UsuariosViewModel();
 
             modelo.Id = v.Id;
-            modelo.NroCuenta = Util.ConvertirAFormatoDeNumero(v.NroCuenta);
+            modelo.NroCuenta = v.NroCuenta;
             modelo.Pin = v.Pin;
             modelo.Balance = v.Balance;
             modelo.FechaVencimiento = v.FechaVencimiento;

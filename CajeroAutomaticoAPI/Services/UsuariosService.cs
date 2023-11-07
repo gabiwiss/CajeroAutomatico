@@ -12,21 +12,13 @@ namespace API.Services
             _usuariosManager = new UsuariosManager();
         }
 
-        public async Task<bool> BuscarUsuario(Int64 nroCuenta)
+        public async Task<bool> BuscarUsuario(string nroCuenta)
         {
-            string nroCuentaFormateado = Util.ConvertirIntAFormatoDeCuenta(nroCuenta);
-            if (nroCuentaFormateado == "incorrecto")
-            {
-                return false;
-            }
-            else
-            {
-                return await _usuariosManager.BuscarUsuario(nroCuentaFormateado);
-            }
+            return await _usuariosManager.BuscarUsuario(nroCuenta);
         }
-        public async Task<Usuarios> RecuperarUsuario(long nroCuenta)
+        public async Task<Usuarios> RecuperarUsuario(string nroCuenta)
         {
-            return await _usuariosManager.RecuperarUsuario(Util.ConvertirIntAFormatoDeCuenta(nroCuenta));
+            return await _usuariosManager.RecuperarUsuario(nroCuenta);
         }
         public async Task<Usuarios> VerificarPin(UsuariosDto usuarioDto)
         {
