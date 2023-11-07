@@ -2,6 +2,9 @@
 using Data.Base;
 using Web.Models;
 using Microsoft.Data.SqlClient;
+using Data.Entities;
+using Newtonsoft.Json;
+using System.Data;
 
 namespace Web.Controllers
 {
@@ -136,6 +139,17 @@ namespace Web.Controllers
                 return RedirectToAction("Retiro", "Usuarios", new UsuariosViewModel { NroCuenta= nroCuenta, Pin=pin, mensaje="No tiene suficiente saldo para realizar la operacion"});
             }
             
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Balance(long nroCuenta)
+        {
+            var response = await baseApi.RecuperarCuenta(nroCuenta);
+            var resultadoUsuario = response as OkObjectResult;
+            Usuarios usuario = JsonConvert.DeserializeObject<Usuarios>(resultadoUsuario.Value.ToString());
+          
+
+            return View();
         }
 
     }
