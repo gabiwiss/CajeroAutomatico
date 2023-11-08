@@ -17,6 +17,14 @@
   2. Librería de clases (DATA) que contiene entidades para implementar ORM (EntityFramework).
   3. API RESTful que consume base de datos (SQL SERVER).
 ## Descripción de sistema
+
+### Base de datos
+
+#### La base de datos (relacional) consta de tres tablas:
+1. Tabla Usuarios: contiene la información de las cuentas.
+2. Tabla Operación: contiene información sobre las operaciones realizadas por los usuarios.
+3. Tabla TipoOperación: tabla que contiene la definición de los tipos de operación.
+   
 #### API
 
 La API esta dividida en dos partes: Los controladores y los services (encargados de abstraer la lógica). En los endpoints se reciben DTOs, se pasan a Entities y luego se mandan a DATA con el uso de managers (encargados de ejecutar las consultas con la base de datos)
@@ -28,3 +36,4 @@ La carpeta BaseApi contiene todas las funciones a implementar que seran consumid
 #### Web
 
 En la vista Web se encuentran vistas , controladores y modelos a utilizar según el tipo de objeto que se obtenga a partir del consumo de la API.
+
