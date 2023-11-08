@@ -11,7 +11,7 @@ namespace Data.Dto
         public int Id { get; set; }
         public int IdUsuario { get; set; }
         public DateTime FechaHoraOperacion { get; set; }
-        public int CodigoOperacion { get; set; }
+        public int IdTipoOperacion { get; set; }
         public decimal? MontoRetirado { get; set; }
         public decimal Balance { get; set; }
     }
