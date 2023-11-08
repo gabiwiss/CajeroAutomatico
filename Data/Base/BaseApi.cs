@@ -127,12 +127,12 @@ namespace Data.Base
             }
         }
 
-        public async Task<IActionResult> GuardarOperacion(UsuariosDto usuario, int codigoOperacion)
+        public async Task<IActionResult> GuardarOperacion(UsuariosDto usuario, int IdTipoOperacion)
         {
             var client = _httpClient.CreateClient("useApi");
             OperacionesDto operacion = new OperacionesDto();
             operacion.IdUsuario = usuario.Id;
-            operacion.CodigoOperacion = codigoOperacion;
+            operacion.IdTipoOperacion = IdTipoOperacion;
             operacion.MontoRetirado = usuario.Retiro;
             operacion.Balance = usuario.Balance - usuario.Retiro;
             operacion.FechaHoraOperacion = DateTime.Now;
@@ -155,7 +155,7 @@ namespace Data.Base
             var response = await client.GetAsync("Usuarios/RecuperarUsuario?nroCuenta=" + nroCuenta);
 
             if (response.IsSuccessStatusCode) 
-            {
+            {                
                 var content = await response.Content.ReadAsStringAsync();
                 return Ok(content);
             }
