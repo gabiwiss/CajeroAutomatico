@@ -1,0 +1,83 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Web.Models.UsuariosViewModel
+@{
+}
+<section>
+    <form asp-controller="Usuarios" asp-action="VerificarPin" method="post">
+        <div class="row pb-5">
+            <div class="col-4 offset-4 text-center">
+                <h1>
+                    INGRESE PIN DE LA CUENTA
+                </h1>
+            </div>
+            <div class="col-4 offset-4 p-5 position-relative">
+                <div class="position-absolute top-50 start-50 translate-middle">
+                    <input id="inputCajeroNroCuenta" type="text" name="nroCuenta" value="@Model.NroCuenta" hidden readonly/>
+                    <input id="inputCajeroNroCuenta" type="number" name="intentos" value="@Model.Intentos" hidden readonly />
+                    <input id="inputCajero" type="password" name="pin" readonly />
+                </div>
+            </div>
+        </div>
+        @if (Model.Intentos < 4 && Model.Intentos > 0 )
+        {
+            <div class="col-4 offset-4 alert alert-danger" role="alert">
+                Pin incorrecto. Le quedan @Model.Intentos intentos.
+            </div>
+        }
+@*        else if( Model.Intentos <= 0)
+        {
+            <div class="col-4 offset-4 alert alert-danger" role="alert">
+                Su cuenta ha sido bloqueada.
+            </div>
+        }*@
+        <div class="row">
+            <div class="col-4 offset-4 text-center p-1">
+                <a class="btn btn-primary btn-lg">1</a>
+                <a class="btn btn-primary btn-lg">2</a>
+                <a class="btn btn-primary btn-lg">3</a>
+            </div>
+            <div class="col-4 offset-4 text-center p-1">
+                <a class="btn btn-primary btn-lg">4</a>
+                <a class="btn btn-primary btn-lg">5</a>
+                <a class="btn btn-primary btn-lg">6</a>
+            </div>
+            <div class="col-4 offset-4 text-center p-1">
+                <a class="btn btn-primary btn-lg">7</a>
+                <a class="btn btn-primary btn-lg">8</a>
+                <a class="btn btn-primary btn-lg">9</a>
+            </div>
+            <div class="col-4 offset-4 text-center p-1">
+                <a class="btn btn-primary btn-lg">0</a>
+            </div>
+            <div class="col-4 offset-4 text-center p-1">
+                <a id="limpiar" class="btn btn-warning btn-lg">LIMPIAR</a>
+                <button type="submit" class="btn btn-success btn-lg">ACEPTAR</button>
+                <a href ="~/Usuarios/Index" class="btn btn-danger btn-lg">SALIR</a>
+            </div>
+        </div>
+    </form>
+</section>
+
+<script>
+    // Obtén una referencia al botón y al campo de entrada
+    var boton = document.getElementsByClassName("btn btn-primary btn-lg");
+    var input = document.getElementById("inputCajero");
+
+    // Agrega un manejador de eventos al botón
+
+    for (let i = 0; i < boton.length; i++) {
+        boton[i].addEventListener("click", function () {
+            // Copia el contenido del botón al campo de entrada
+            input.value += parseInt(boton[i].textContent);
+        });
+    }
+
+    var botonLimpiar = document.getElementById("limpiar")
+
+    botonLimpiar.addEventListener("click", function () {
+        input.value = "";
+    });
+
+</script>

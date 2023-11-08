@@ -1,0 +1,23 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Web.Models.UsuariosViewModel
+@{
+    
+}
+<div class="row pb-5">
+    <div class="col-4 offset-4 text-center">
+        <h1>
+            SELECCIONE UNA OPERACIÓN
+        </h1>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto p-5">
+        @Html.ActionLink("Balance","Balance","Usuarios",Model,new {@class="btn btn-primary"})
+        @Html.ActionLink("Retiro","Retiro","Usuarios",Model,new {@class="btn btn-primary"})
+@*        <a asp-action="Balance" asp-controller="Usuarios" asp-route-nroCuenta="@Model.NroCuenta" class="btn btn-primary"  type="button">Balance</a>
+        <a asp-action="Retiro" asp-controller="Usuarios" asp-route-nroCuenta="@Model.NroCuenta" asp-route-pin="@Model.Pin" class="btn btn-primary" type="button">Retiro</a>*@
+    </div>
+    <div class="col-4 offset-4 text-center p-5">
+        <a href="~/Usuarios/Index" class="btn btn-danger btn-lg">SALIR</a>
+    </div>
+</div>

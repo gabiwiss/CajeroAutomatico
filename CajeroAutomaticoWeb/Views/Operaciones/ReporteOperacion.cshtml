@@ -1,0 +1,25 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Web.Models.OperacionesViewModel
+@{
+}
+<div class="row pb-5">
+    <div class="col-4 offset-4 text-center">
+        <h1>
+            DETALLES DE OPERACIÓN
+        </h1>
+    </div>
+    <div>
+        <ul class="list-group">
+            <li class="list-group-item">NÚMERO DE CUENTA: @Model.NroCuenta</li>
+            <li class="list-group-item">FECHA DE OPERACIÓN: @Model.FechaHoraOperacion</li>
+            <li class="list-group-item">CANTIDAD DE DINERO RETIRADO: @Model.MontoRetirado</li>
+            <li class="list-group-item">CANTIDAD DE DINERO EN LA CUENTA: @Model.Balance</li>
+        </ul>
+    </div>
+    <div class="col-4 offset-4 text-center p-5">
+        @Html.ActionLink("ATRAS","Operaciones","Usuarios",new Web.Models.UsuariosViewModel{ NroCuenta = Model.NroCuenta}, new { @class = "btn btn-primary btn-lg" })
+        <a class="btn btn-danger btn-lg">SALIR</a>
+    </div>
+</div>
