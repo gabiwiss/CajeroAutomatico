@@ -9,7 +9,7 @@ namespace Web.Models
         public int IdUsuario { get; set; }
         public string NroCuenta { get; set; }
         public DateTime FechaHoraOperacion { get; set; }
-        public int CodigoOperacion { get; set; }
+        public int IdTipoOperacion { get; set; }
         public decimal? MontoRetirado { get; set; }
         public decimal Balance { get; set; }
 
@@ -18,7 +18,7 @@ namespace Web.Models
             OperacionesViewModel operacion= new OperacionesViewModel();
             operacion.IdUsuario=v.IdUsuario;
             operacion.FechaHoraOperacion=v.FechaHoraOperacion;
-            operacion.CodigoOperacion=v.CodigoOperacion;
+            operacion.IdTipoOperacion=v.IdTipoOperacion;
             operacion.MontoRetirado=v.MontoRetirado;
             operacion.Balance=v.Balance;
             return operacion;
