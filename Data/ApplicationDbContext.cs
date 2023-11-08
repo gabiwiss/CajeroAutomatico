@@ -26,5 +26,6 @@ namespace Data
 
         public DbSet<Usuarios> Usuarios { get; set; }
         public DbSet<Operaciones> Operaciones { get; set; }
+        public DbSet<TipoOperacion> TipoOperaciones { get; set; }
     }
 }
