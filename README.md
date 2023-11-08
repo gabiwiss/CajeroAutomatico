@@ -9,6 +9,8 @@
   2. Configurar proyectos de inicio simultaneos (API y WEB)
   3. Verificar URL de API en Web/appsettings.json
 
+## Información adicional:
+El backup de la base de datos y su diagrama se encuentra en el archivo DB.rar
 
 ## Resumen de sistema
   Se requirió un sistema de cajero automático tipo ATM. El mismo fue desarrollado en 3(tres) proyectos:
@@ -36,4 +38,6 @@ La carpeta BaseApi contiene todas las funciones a implementar que seran consumid
 #### Web
 
 En la vista Web se encuentran vistas , controladores y modelos a utilizar según el tipo de objeto que se obtenga a partir del consumo de la API.
+
+
 
